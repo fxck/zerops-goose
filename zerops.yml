@@ -12,5 +12,4 @@ zerops:
         GOOSE_MODE: "smart_approve"
         GOOSE_TOOLSHIM: "true"
         GOOSE_CLI_MIN_PRIORITY: "0.2"
-        PATH: "/root/.local/bin:$PATH"
       start: zsc noop --silent
