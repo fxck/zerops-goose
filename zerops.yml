@@ -1,0 +1,22 @@
+zerops:
+  - setup: goose
+    build:
+      base: python@3.12
+      deployFiles:
+        - app.py
+      addToRunPrepare:
+        - requirements.txt
+    run:
+      base: python@3.12
+      prepareCommands:
+        - uv pip install --ignore-installed -r requirements.txt
+      start: uvicorn app:app --host 0.0.0.0 --port 8000
+      ports:
+        - port: 8000
+          httpSupport: true
+      envVariables:
+        ZEROPS_PROJECT_ID: ${projectId}
+      healthCheck:
+        httpGet:
+          port: 8000
+          path: /status
