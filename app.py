@@ -1,47 +1,39 @@
 import os
-import subprocess
+from fastapi import FastAPI, Request
 from goose import Goose
+import uvicorn
+
+# Initialize FastAPI
+app = FastAPI(title="Goose Agent API")
 
 # Initialize Goose with API key from environment variable
 api_key = os.environ.get("LLM_API_KEY")
 goose = Goose(api_key=api_key)
 
-# Start a conversation with system prompt
+# System prompt
 system_prompt = """
 You are running in a Zerops container. You can help with development tasks.
 """
 
-# Create a simple HTTP server to handle health checks and commands
-from http.server import BaseHTTPRequestHandler, HTTPServer
+@app.get("/status")
+async def status():
+    return {"status": "OK"}
 
-class GooseServer(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == '/status':
-            self.send_response(200)
-            self.send_header('Content-type', 'text/plain')
-            self.end_headers()
-            self.wfile.write(b"OK")
-            return
-            
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-        self.wfile.write(b"Goose Agent is running")
+@app.get("/")
+async def root():
+    return {"message": "Goose Agent is running"}
+
+@app.post("/query")
+async def query(request: Request):
+    data = await request.json()
+    user_message = data.get("message", "")
     
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length).decode('utf-8')
-        
-        # Process the request with Goose
-        conversation = goose.start_conversation(system_prompt=system_prompt)
-        response = conversation.send_message(post_data)
-        
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
-        self.wfile.write(f'{{"response": "{response}"}}'.encode())
+    # Process with Goose
+    conversation = goose.start_conversation(system_prompt=system_prompt)
+    response = conversation.send_message(user_message)
+    
+    return {"response": response}
 
-# Run the server
-server = HTTPServer(('', 8000), GooseServer)
-print("Starting Goose server on port 8000")
-server.serve_forever()
+# This allows running directly with python app.py
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=8000)
