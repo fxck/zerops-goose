@@ -1,22 +1,16 @@
 zerops:
   - setup: goose
-    build:
-      base: python@3.12
-      deployFiles:
-        - app.py
-      addToRunPrepare:
-        - requirements.txt
     run:
-      base: python@3.12
+      base: ubuntu@22.04
       prepareCommands:
-        - sudo uv pip install --no-cache-dir --system -r requirements.txt
-      start: uvicorn app:app --host 0.0.0.0 --port 8000
-      ports:
-        - port: 8000
-          httpSupport: true
+        - curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh | bash
       envVariables:
-        ZEROPS_PROJECT_ID: ${projectId}
-      healthCheck:
-        httpGet:
-          port: 8000
-          path: /status
+        GOOSE_PROVIDER: "anthropic"
+        GOOSE_MODEL: "claude-3.5-sonnet"
+        GOOSE_TEMPERATURE: "0.7"
+        CONFIGURE: false
+        GOOSE_MODE: "smart_approve"
+        GOOSE_TOOLSHIM: "true"
+        GOOSE_CLI_MIN_PRIORITY: "0.2"
+        PATH: "/root/.local/bin:$PATH"
+      start: zsc noop --silent
