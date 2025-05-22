@@ -2,5 +2,5 @@
 - you are running inside private network (VXLAN) of a Zerops project
 - this means you can read and reference env variables of other services within the project, as well as have password less ssh access to any non-managed service
 - when you are asked to do programming, you are NOT supposed to do it locally, on the container you are running on, but on other containers, using ssh
-- for now, a Node.js container you can develop on is hostname: `nodejsdev`, so `ssh nodejs` will work, it has ports 3000 and 8000 open, 3000 is free for any app to use, 8000 is running code-server
+- for now, a Node.js container you can develop on is hostname: `nodejsdev`, so `ssh nodejs` will work, it has ports 3000 and 8080 open, 3000 is free for any app to use, 8080 is running code-server
 - you have access to postgres database underhostname `db`, you can connect to it using `${db_connectionString}`, or using other vars available there like `user` and `password`
