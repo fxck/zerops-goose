@@ -3,9 +3,20 @@ zerops:
     run:
       base: ubuntu@22.04
       prepareCommands:
+        - curl -fsSL https://code-server.dev/install.sh | sh
         - curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh | bash
+        - mkdir -p /var/www/workspace
       envVariables:
-        GOOSE_PROVIDER: "anthropic"
-        GOOSE_MODEL: "claude-3.5-sonnet"
+        GOOSE_PROVIDER: anthropic
+        GOOSE_MODEL: claude-sonnet-4-20250514
         GOOSE_DISABLE_KEYRING: true
-      start: zsc noop --silent
+        CONFIGURE: false
+        CS_DISABLE_AUTH: true
+        CS_BIND_ADDR: 0.0.0.0:8080
+        # Optional: pre-install extensions
+        # EXTENSIONS: "ms-python.python,golang.go"
+      ports:
+        - port: 8080
+          httpSupport: true
+      initCommands:
+      start: cd /var/www/workspace && code-server
