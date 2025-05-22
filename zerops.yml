@@ -3,16 +3,28 @@ zerops:
     run:
       base: ubuntu@22.04
       prepareCommands:
-        - curl -fsSL https://code-server.dev/install.sh | sh
         - curl -fsSL https://github.com/block/goose/releases/download/stable/download_cli.sh | bash
-        - mkdir -p /var/www/workspace
+        - mkdir -p ~/.config/goose
+        - |
+          cat > ~/.config/goose/config.yaml << 'EOF'
+          extensions:
+            developer:
+              bundled: true
+              enabled: true
+              name: developer
+              timeout: 300
+              type: builtin
+            
+            memory:
+              bundled: true
+              enabled: true
+              name: memory
+              timeout: 300
+              type: builtin
+          EOF
       envVariables:
         GOOSE_PROVIDER: anthropic
         GOOSE_MODEL: claude-sonnet-4-20250514
         GOOSE_DISABLE_KEYRING: true
-        GOOSE_EXTENSIONS: developer
         CONFIGURE: false
-      ports:
-        - port: 8080
-          httpSupport: true
-      start: cd /var/www/workspace && code-server --auth none --bind-addr 0.0.0.0:8080
+      start: zsc noop --silent
