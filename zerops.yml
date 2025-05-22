@@ -11,12 +11,7 @@ zerops:
         GOOSE_MODEL: claude-sonnet-4-20250514
         GOOSE_DISABLE_KEYRING: true
         CONFIGURE: false
-        CS_DISABLE_AUTH: true
-        CS_BIND_ADDR: 0.0.0.0:8080
-        # Optional: pre-install extensions
-        # EXTENSIONS: "ms-python.python,golang.go"
       ports:
         - port: 8080
           httpSupport: true
-      initCommands:
-      start: cd /var/www/workspace && code-server
+      start: cd /var/www/workspace && code-server --auth none --bind-addr 0.0.0.0:8080
