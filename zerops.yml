@@ -10,7 +10,7 @@ zerops:
         GOOSE_PROVIDER: anthropic
         GOOSE_MODEL: claude-sonnet-4-20250514
         GOOSE_DISABLE_KEYRING: true
-        GOOSE_EXTENSIONS: "developer,shell"
+        GOOSE_EXTENSIONS: developer
         CONFIGURE: false
       ports:
         - port: 8080
